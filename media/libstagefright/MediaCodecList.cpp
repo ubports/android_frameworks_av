@@ -96,7 +96,7 @@ sp<IMediaCodecList> MediaCodecList::getInstance() {
 
 MediaCodecList::MediaCodecList()
     : mInitCheck(NO_INIT) {
-    parseTopLevelXMLFile("/etc/media_codecs.xml");
+    parseTopLevelXMLFile("/system/etc/media_codecs.xml");
 }
 
 void MediaCodecList::parseTopLevelXMLFile(const char *codecs_xml) {
