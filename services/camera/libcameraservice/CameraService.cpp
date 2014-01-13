@@ -22,7 +22,6 @@
 #include <sys/types.h>
 #include <pthread.h>
 
-#include <binder/AppOpsManager.h>
 #include <binder/IPCThreadState.h>
 #include <binder/IServiceManager.h>
 #include <binder/MemoryBase.h>
@@ -1401,7 +1400,6 @@ CameraService::BasicClient::BasicClient(const sp<CameraService>& cameraService,
     mClientPid = clientPid;
     mClientUid = clientUid;
     mServicePid = servicePid;
-    mOpsActive = false;
     mDestructionStarted = false;
     mBurstCnt = 0;
 }
@@ -1421,92 +1419,14 @@ void CameraService::BasicClient::disconnect() {
 }
 
 status_t CameraService::BasicClient::startCameraOps() {
-    int32_t res;
-    // Notify app ops that the camera is not available
-    mOpsCallback = new OpsCallback(this);
-
-    {
-        ALOGV("%s: Start camera ops, package name = %s, client UID = %d",
-              __FUNCTION__, String8(mClientPackageName).string(), mClientUid);
-    }
-
-    mAppOpsManager.startWatchingMode(AppOpsManager::OP_CAMERA,
-            mClientPackageName, mOpsCallback);
-    res = mAppOpsManager.startOp(AppOpsManager::OP_CAMERA,
-            mClientUid, mClientPackageName);
-
-    if (res != AppOpsManager::MODE_ALLOWED) {
-        ALOGI("Camera %d: Access for \"%s\" has been revoked",
-                mCameraId, String8(mClientPackageName).string());
-        return PERMISSION_DENIED;
-    }
-
-    mOpsActive = true;
-
-    // Transition device availability listeners from PRESENT -> NOT_AVAILABLE
-    mCameraService->updateStatus(ICameraServiceListener::STATUS_NOT_AVAILABLE,
-            mCameraId);
-
     return OK;
 }
 
 status_t CameraService::BasicClient::finishCameraOps() {
-    // Check if startCameraOps succeeded, and if so, finish the camera op
-    if (mOpsActive) {
-        // Notify app ops that the camera is available again
-        mAppOpsManager.finishOp(AppOpsManager::OP_CAMERA, mClientUid,
-                mClientPackageName);
-        mOpsActive = false;
-
-        // Notify device availability listeners that this camera is available
-        // again
-
-        StatusVector rejectSourceStates;
-        rejectSourceStates.push_back(ICameraServiceListener::STATUS_NOT_PRESENT);
-        rejectSourceStates.push_back(ICameraServiceListener::STATUS_ENUMERATING);
-
-        // Transition to PRESENT if the camera is not in either of above 2
-        // states
-        mCameraService->updateStatus(ICameraServiceListener::STATUS_PRESENT,
-                mCameraId,
-                &rejectSourceStates);
-
-    }
-    // Always stop watching, even if no camera op is active
-    mAppOpsManager.stopWatchingMode(mOpsCallback);
-    mOpsCallback.clear();
-
     return OK;
 }
 
 void CameraService::BasicClient::opChanged(int32_t op, const String16& packageName) {
-    String8 name(packageName);
-    String8 myName(mClientPackageName);
-
-    if (op != AppOpsManager::OP_CAMERA) {
-        ALOGW("Unexpected app ops notification received: %d", op);
-        return;
-    }
-
-    int32_t res;
-    res = mAppOpsManager.checkOp(AppOpsManager::OP_CAMERA,
-            mClientUid, mClientPackageName);
-    ALOGV("checkOp returns: %d, %s ", res,
-            res == AppOpsManager::MODE_ALLOWED ? "ALLOWED" :
-            res == AppOpsManager::MODE_IGNORED ? "IGNORED" :
-            res == AppOpsManager::MODE_ERRORED ? "ERRORED" :
-            "UNKNOWN");
-
-    if (res != AppOpsManager::MODE_ALLOWED) {
-        ALOGI("Camera %d: Access for \"%s\" revoked", mCameraId,
-                myName.string());
-        // Reset the client PID to allow server-initiated disconnect,
-        // and to prevent further calls by client.
-        mClientPid = getCallingPid();
-        CaptureResultExtras resultExtras; // a dummy result (invalid)
-        notifyError(ICameraDeviceCallbacks::ERROR_CAMERA_SERVICE, resultExtras);
-        disconnect();
-    }
 }
 
 // ----------------------------------------------------------------------------
