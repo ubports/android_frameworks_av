@@ -8,49 +8,52 @@ LOCAL_MODULE_TAGS := optional
 include $(BUILD_STATIC_LIBRARY)
 endif
 
-include $(CLEAR_VARS)
+## Disabled because Ubuntu Touch is not using mediaserver - instead UT uses
+## camera_service which is located in ubuntu/compat/media. UT is trying to
+## rely on the Android Binder services less and less.
+#include $(CLEAR_VARS)
 
-LOCAL_SRC_FILES:= \
-	main_mediaserver.cpp 
+#LOCAL_SRC_FILES:= \
+#	main_mediaserver.cpp 
 
-LOCAL_SHARED_LIBRARIES := \
-	libaudioflinger \
-	libaudiopolicyservice \
-	libcamera_metadata\
-	libcameraservice \
-	libmedialogservice \
-	libcutils \
-	libnbaio \
-	libmedia \
-	libmediaplayerservice \
-	libutils \
-	liblog \
-	libbinder \
-	libsoundtriggerservice
+#LOCAL_SHARED_LIBRARIES := \
+#	libaudioflinger \
+#	libaudiopolicyservice \
+#	libcamera_metadata\
+#	libcameraservice \
+#	libmedialogservice \
+#	libcutils \
+#	libnbaio \
+#	libmedia \
+#	libmediaplayerservice \
+#	libutils \
+#	liblog \
+#	libbinder \
+#	libsoundtriggerservice
 
-LOCAL_STATIC_LIBRARIES := \
-	libregistermsext
+#LOCAL_STATIC_LIBRARIES := \
+#	libregistermsext
 
-LOCAL_C_INCLUDES := \
-    frameworks/av/media/libmediaplayerservice \
-    frameworks/av/services/medialog \
-    frameworks/av/services/audioflinger \
-    frameworks/av/services/audiopolicy \
-    frameworks/av/services/camera/libcameraservice \
-    $(call include-path-for, audio-utils) \
-    frameworks/av/services/soundtrigger
+#LOCAL_C_INCLUDES := \
+#    frameworks/av/media/libmediaplayerservice \
+#    frameworks/av/services/medialog \
+#    frameworks/av/services/audioflinger \
+#    frameworks/av/services/audiopolicy \
+#    frameworks/av/services/camera/libcameraservice \
+#    $(call include-path-for, audio-utils) \
+#    frameworks/av/services/soundtrigger
 
-ifeq ($(strip $(AUDIO_FEATURE_ENABLED_LISTEN)),true)
-  LOCAL_SHARED_LIBRARIES += liblisten
-  LOCAL_C_INCLUDES += $(TARGET_OUT_HEADERS)/mm-audio/audio-listen
-  LOCAL_CFLAGS += -DAUDIO_LISTEN_ENABLED
-endif
+#ifeq ($(strip $(AUDIO_FEATURE_ENABLED_LISTEN)),true)
+#  LOCAL_SHARED_LIBRARIES += liblisten
+#  LOCAL_C_INCLUDES += $(TARGET_OUT_HEADERS)/mm-audio/audio-listen
+#  LOCAL_CFLAGS += -DAUDIO_LISTEN_ENABLED
+#endif
 
-ifneq ($(BOARD_NUMBER_OF_CAMERAS),)
-    LOCAL_CFLAGS += -DMAX_CAMERAS=$(BOARD_NUMBER_OF_CAMERAS)
-endif
+#ifneq ($(BOARD_NUMBER_OF_CAMERAS),)
+#    LOCAL_CFLAGS += -DMAX_CAMERAS=$(BOARD_NUMBER_OF_CAMERAS)
+#endif
 
-LOCAL_MODULE:= mediaserver
-LOCAL_32_BIT_ONLY := true
+#LOCAL_MODULE:= mediaserver
+#LOCAL_32_BIT_ONLY := true
 
-include $(BUILD_EXECUTABLE)
+#include $(BUILD_EXECUTABLE)
