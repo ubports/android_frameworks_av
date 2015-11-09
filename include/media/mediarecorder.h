@@ -243,7 +243,7 @@ public:
     status_t    getMaxAmplitude(int* max);
     status_t    start();
     status_t    stop();
-    status_t    pause();
+  //  status_t    pause();
     status_t    reset();
     status_t    init();
     status_t    close();
