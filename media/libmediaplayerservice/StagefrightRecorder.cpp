@@ -73,13 +73,8 @@ namespace android {
 static const int64_t kMax32BitFileSize = 0x00ffffffffLL; // 4GB
 
 // To collect the encoder usage for the battery app
-static void addBatteryData(uint32_t params) {
-    sp<IBinder> binder =
-        defaultServiceManager()->getService(String16("media.player"));
-    sp<IMediaPlayerService> service = interface_cast<IMediaPlayerService>(binder);
-    CHECK(service.get() != NULL);
-
-    service->addBatteryData(params);
+static void addBatteryData(uint32_t) {
+    // Empty on purpose.
 }
 
 
