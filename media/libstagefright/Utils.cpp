@@ -41,9 +41,6 @@
 #ifdef ENABLE_AV_ENHANCEMENTS
 #include "QCMediaDefs.h"
 #include "QCMetaData.h"
-#ifndef QCOM_DIRECTTRACK
-#include "audio_defs.h"
-#endif
 #endif
 
 namespace android {
