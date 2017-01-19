@@ -576,20 +576,7 @@ sp<MediaSource> OMXCodec::Create(
             }
         }
 
-        //STATS profiling
-        PlayerExtendedStats* tempPtr = NULL;
-        meta->findPointer(ExtendedStats::MEDIA_STATS_FLAG, (void**)&tempPtr);
-
-        bool isVideo = !strncasecmp("video/", mime, 6);
-        if (tempPtr) {
-            tempPtr->profileStart(STATS_PROFILE_ALLOCATE_NODE(isVideo));
-        }
-
         status_t err = omx->allocateNode(componentName, observer, &node);
-
-        if (tempPtr) {
-            tempPtr->profileStop(STATS_PROFILE_ALLOCATE_NODE(isVideo));
-        }
 
         if (err == OK) {
             ALOGD("Successfully allocated OMX node '%s'", componentName);
@@ -601,16 +588,7 @@ sp<MediaSource> OMXCodec::Create(
 
             observer->setCodec(codec);
 
-            { //profile configure codec
-                ExtendedStats::AutoProfile autoProfile(
-                        STATS_PROFILE_CONFIGURE_CODEC(isVideo), tempPtr);
-                err = codec->configureCodec(meta);
-            }
-
             /* set the stats pointer if we haven't yet and it exists */
-            if(codec->mPlayerExtendedStats == NULL && tempPtr)
-                codec->mPlayerExtendedStats = tempPtr;
-
             if (err == OK) {
                 return codec;
             }

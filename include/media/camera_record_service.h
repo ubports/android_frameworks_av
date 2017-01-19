@@ -34,6 +34,11 @@ class RecordThread;
 class ICameraRecordService : public IInterface
 {
 public:
+    struct Recording {
+        sp<IAudioRecord> ar;
+        sp<IMemory> cblk;
+        sp<IMemory> buffers;
+    };
     DECLARE_META_INTERFACE(CameraRecordService);
 
     static const char* exported_service_name() { return "android.media.ICameraRecordService"; }
@@ -42,14 +47,14 @@ public:
                                 uint32_t sampleRate,
                                 audio_format_t format,
                                 audio_channel_mask_t channelMask) = 0;
-    virtual sp<IAudioRecord> openRecord(
-                                uint32_t sampleRate,
-                                audio_format_t format,
-                                audio_channel_mask_t channelMask,
-                                size_t frameCount,
-                                pid_t tid,
-                                int *sessionId,
-                                status_t *status) = 0;
+    virtual Recording openRecord(
+        uint32_t sampleRate,
+        audio_format_t format,
+        audio_channel_mask_t channelMask,
+        size_t frameCount,
+        pid_t tid,
+        int *sessionId,
+        status_t *status) = 0;
 
 };
 
@@ -75,17 +80,17 @@ public:
     ~BpCameraRecordService();
 
     virtual status_t initRecord(
-                                uint32_t sampleRate,
-                                audio_format_t format,
-                                audio_channel_mask_t channelMask);
-    virtual sp<IAudioRecord> openRecord(
-                                uint32_t sampleRate,
-                                audio_format_t format,
-                                audio_channel_mask_t channelMask,
-                                size_t frameCount,
-                                pid_t tid,
-                                int *sessionId,
-                                status_t *status);
+        uint32_t sampleRate,
+        audio_format_t format,
+        audio_channel_mask_t channelMask);
+    virtual Recording openRecord(
+        uint32_t sampleRate,
+        audio_format_t format,
+        audio_channel_mask_t channelMask,
+        size_t frameCount,
+        pid_t tid,
+        int *sessionId,
+        status_t *status);
 };
 
 // ----------------------------------------------------------------------------
@@ -101,17 +106,17 @@ public:
     uint32_t nextUniqueId();
 
     virtual status_t initRecord(
-                                uint32_t sampleRate,
-                                audio_format_t format,
-                                audio_channel_mask_t channelMask);
-    virtual sp<IAudioRecord> openRecord(
-                                uint32_t sampleRate,
-                                audio_format_t format,
-                                audio_channel_mask_t channelMask,
-                                size_t frameCount,
-                                pid_t tid,
-                                int *sessionId,
-                                status_t *status);
+        uint32_t sampleRate,
+        audio_format_t format,
+        audio_channel_mask_t channelMask);
+    virtual Recording openRecord(
+        uint32_t sampleRate,
+        audio_format_t format,
+        audio_channel_mask_t channelMask,
+        size_t frameCount,
+        pid_t tid,
+        int *sessionId,
+        status_t *status);
 
 private:
     static sp<CameraRecordService>& service_instance();
