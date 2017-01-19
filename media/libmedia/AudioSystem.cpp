@@ -596,35 +596,7 @@ sp<AudioSystem::AudioPolicyServiceClient> AudioSystem::gAudioPolicyServiceClient
 // establish binder interface to AudioPolicy service
 const sp<IAudioPolicyService> AudioSystem::get_audio_policy_service()
 {
-    sp<IAudioPolicyService> ap;
-    sp<AudioPolicyServiceClient> apc;
-    {
-        Mutex::Autolock _l(gLockAPS);
-        if (gAudioPolicyService == 0) {
-            sp<IServiceManager> sm = defaultServiceManager();
-            sp<IBinder> binder;
-            do {
-                binder = sm->getService(String16("media.audio_policy"));
-                if (binder != 0)
-                    break;
-                ALOGW("AudioPolicyService not published, waiting...");
-                usleep(500000); // 0.5 s
-            } while (true);
-            if (gAudioPolicyServiceClient == NULL) {
-                gAudioPolicyServiceClient = new AudioPolicyServiceClient();
-            }
-            binder->linkToDeath(gAudioPolicyServiceClient);
-            gAudioPolicyService = interface_cast<IAudioPolicyService>(binder);
-            LOG_ALWAYS_FATAL_IF(gAudioPolicyService == 0);
-            apc = gAudioPolicyServiceClient;
-        }
-        ap = gAudioPolicyService;
-    }
-    if (apc != 0) {
-        ap->registerClient(apc);
-    }
-
-    return ap;
+    return sp<IAudioPolicyService>();
 }
 
 // ---------------------------------------------------------------------------

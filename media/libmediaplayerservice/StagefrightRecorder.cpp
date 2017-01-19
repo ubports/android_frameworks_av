@@ -921,15 +921,6 @@ status_t StagefrightRecorder::start() {
         }
     }
 
-    if (mAudioSource != AUDIO_SOURCE_CNT) {
-        //check permissions
-        if (mAppOpsManager.noteOp(AppOpsManager::OP_RECORD_AUDIO, mClientUid,
-                mClientName) != AppOpsManager::MODE_ALLOWED) {
-            ALOGE("User permission denied to record audio.");
-            return status;
-        }
-    }
-
     if (mWriter == NULL) {
         ALOGE("File writer is not avaialble");
         return UNKNOWN_ERROR;

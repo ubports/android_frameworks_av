@@ -88,10 +88,8 @@ AudioSource::AudioSource(
             ((channelCount == 1) || (channelCount == 2)) &&
             (inputSource == AUDIO_SOURCE_CAMCORDER)) {
 
-            //Need audioSession Id in the extended audio record constructor
-            //where the transfer mode can be specified
-            mAudioSessionId = AudioSystem::newAudioUniqueId();
-            AudioSystem::acquireAudioSessionId(mAudioSessionId, -1);
+            // construct session in-process due to no AF
+            mAudioSessionId = AUDIO_SESSION_ALLOCATE;
 
             mRecord = new AudioRecord(
                         inputSource, sampleRate, AUDIO_FORMAT_PCM_16_BIT,
