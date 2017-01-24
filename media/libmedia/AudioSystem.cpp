@@ -55,7 +55,39 @@ sp<AudioSystem::AudioPortCallback> AudioSystem::gAudioPortCallback;
 // establish binder interface to AudioFlinger service
 const sp<IAudioFlinger> AudioSystem::get_audio_flinger()
 {
-    return sp<IAudioFlinger>();
+    sp<IAudioFlinger> af;
+    sp<AudioFlingerClient> afc;
+    {
+    ALOGV("%s", __PRETTY_FUNCTION__);
+        Mutex::Autolock _l(gLock);
+        if (gAudioFlinger == 0) {
+            sp<IServiceManager> sm = defaultServiceManager();
+            sp<IBinder> binder;
+            do {
+                binder = sm->getService(String16("media.audio_flinger"));
+                if (binder != 0)
+                    break;
+                ALOGW("AudioFlinger not published, waiting...");
+                usleep(500000); // 0.5 s
+            } while (true);
+            if (gAudioFlingerClient == NULL) {
+                gAudioFlingerClient = new AudioFlingerClient();
+            } else {
+                if (gAudioErrorCallback) {
+                    gAudioErrorCallback(NO_ERROR);
+                }
+            }
+            binder->linkToDeath(gAudioFlingerClient);
+            gAudioFlinger = interface_cast<IAudioFlinger>(binder);
+            LOG_ALWAYS_FATAL_IF(gAudioFlinger == 0);
+            afc = gAudioFlingerClient;
+        }
+        af = gAudioFlinger;
+    }
+    if (afc != 0) {
+        af->registerClient(afc);
+    }
+    return af;
 }
 
 const sp<ICameraRecordService>& AudioSystem::get_camera_record_service()
