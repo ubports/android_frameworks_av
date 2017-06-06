@@ -58,8 +58,6 @@ LOCAL_C_INCLUDES :=                                                 \
 
 LOCAL_MODULE:= libmediaplayerservice
 
-LOCAL_32_BIT_ONLY := true
-
 #QTI FLAC Decoder
 ifeq ($(call is-vendor-board-platform,QCOM),true)
 ifeq ($(strip $(AUDIO_FEATURE_ENABLED_EXTN_FLAC_DECODER)),true)
