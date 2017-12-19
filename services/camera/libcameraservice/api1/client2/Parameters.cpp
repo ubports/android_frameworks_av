@@ -1706,7 +1706,7 @@ status_t Parameters::set(const String8& paramString) {
                         "fixed focus lens",
                         __FUNCTION__,
                         newParams.get(CameraParameters::KEY_FOCUS_MODE));
-                return BAD_VALUE;
+               // return BAD_VALUE;
             } else if (validatedParams.focusMode !=
                     Parameters::FOCUS_MODE_INFINITY) {
                 camera_metadata_ro_entry_t availableFocusModes =
@@ -1719,7 +1719,7 @@ status_t Parameters::set(const String8& paramString) {
                     ALOGE("%s: Requested focus mode \"%s\" is not supported",
                             __FUNCTION__,
                             newParams.get(CameraParameters::KEY_FOCUS_MODE));
-                    return BAD_VALUE;
+                    //return BAD_VALUE;
                 }
             }
         }
