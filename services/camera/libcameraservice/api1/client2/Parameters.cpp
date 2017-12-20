@@ -1180,7 +1180,7 @@ status_t Parameters::set(const String8& paramString) {
                     __FUNCTION__,
                     previewWidth, previewHeight,
                     validatedParams.previewWidth, validatedParams.previewHeight);
-            return BAD_VALUE;
+         //   return BAD_VALUE;
         }
         for (i = 0; i < availablePreviewSizes.size(); i++) {
             if ((availablePreviewSizes[i].width ==
@@ -1192,7 +1192,7 @@ status_t Parameters::set(const String8& paramString) {
             ALOGE("%s: Requested preview size %d x %d is not supported",
                     __FUNCTION__, validatedParams.previewWidth,
                     validatedParams.previewHeight);
-            return BAD_VALUE;
+          //  return BAD_VALUE;
         }
     }
 
@@ -1230,7 +1230,7 @@ status_t Parameters::set(const String8& paramString) {
             ALOGE("%s: FPS was not set. One of %s or %s must be set.",
                   __FUNCTION__, CameraParameters::KEY_PREVIEW_FRAME_RATE,
                   CameraParameters::KEY_PREVIEW_FPS_RANGE);
-            return BAD_VALUE;
+          //  return BAD_VALUE;
         } else if (fpsRange == NULL) {
             fpsUseSingleValue = true;
             ALOGV("%s: FPS range not set, using FPS single value",
@@ -1280,7 +1280,7 @@ status_t Parameters::set(const String8& paramString) {
             ALOGE("%s: Requested preview FPS range %d - %d is not supported",
                 __FUNCTION__, validatedParams.previewFpsRange[0],
                     validatedParams.previewFpsRange[1]);
-            return BAD_VALUE;
+          //  return BAD_VALUE;
         }
     }
 
@@ -1291,7 +1291,7 @@ status_t Parameters::set(const String8& paramString) {
         if (state >= PREVIEW) {
             ALOGE("%s: Preview format cannot be updated when preview "
                     "is active!", __FUNCTION__);
-            return BAD_VALUE;
+         //   return BAD_VALUE;
         }
         SortedVector<int32_t> availableFormats = getAvailableOutputFormats();
         // If using flexible YUV, always support NV21/YV12. Otherwise, check
@@ -1309,7 +1309,7 @@ status_t Parameters::set(const String8& paramString) {
                 ALOGE("%s: Requested preview format %s (0x%x) is not supported",
                         __FUNCTION__, newParams.getPreviewFormat(),
                         validatedParams.previewFormat);
-                return BAD_VALUE;
+           //     return BAD_VALUE;
             }
         }
     }
@@ -1349,7 +1349,7 @@ status_t Parameters::set(const String8& paramString) {
             if (candidateRanges.isEmpty()) {
                 ALOGE("%s: Requested preview frame rate %d is not supported",
                         __FUNCTION__, previewFps);
-                return BAD_VALUE;
+             //   return BAD_VALUE;
             }
             // most applicable range with targetFps
             Range bestRange = candidateRanges[0];
@@ -1434,7 +1434,7 @@ status_t Parameters::set(const String8& paramString) {
             ALOGE("%s: Requested picture size %d x %d is not supported",
                     __FUNCTION__, validatedParams.pictureWidth,
                     validatedParams.pictureHeight);
-            return BAD_VALUE;
+        //    return BAD_VALUE;
         }
     }
 
@@ -1457,7 +1457,7 @@ status_t Parameters::set(const String8& paramString) {
             ALOGE("%s: Requested JPEG thumbnail size %d x %d is not supported",
                     __FUNCTION__, validatedParams.jpegThumbSize[0],
                     validatedParams.jpegThumbSize[1]);
-            return BAD_VALUE;
+         //   return BAD_VALUE;
         }
     }
 
@@ -1467,7 +1467,7 @@ status_t Parameters::set(const String8& paramString) {
     if (quality < 0 || quality > 100) {
         ALOGE("%s: Requested JPEG thumbnail quality %d is not supported",
                 __FUNCTION__, quality);
-        return BAD_VALUE;
+      //  return BAD_VALUE;
     }
     validatedParams.jpegThumbQuality = quality;
 
@@ -1477,7 +1477,7 @@ status_t Parameters::set(const String8& paramString) {
     if (quality < 0 || quality > 100) {
         ALOGE("%s: Requested JPEG quality %d is not supported",
                 __FUNCTION__, quality);
-        return BAD_VALUE;
+      //  return BAD_VALUE;
     }
     validatedParams.jpegQuality = quality;
 
@@ -1490,7 +1490,7 @@ status_t Parameters::set(const String8& paramString) {
             validatedParams.jpegRotation != 270) {
         ALOGE("%s: Requested picture rotation angle %d is not supported",
                 __FUNCTION__, validatedParams.jpegRotation);
-        return BAD_VALUE;
+      //  return BAD_VALUE;
     }
 
     // GPS
@@ -1512,33 +1512,33 @@ status_t Parameters::set(const String8& paramString) {
                 gpsProcMethodStr == NULL) {
             ALOGE("%s: Incomplete set of GPS parameters provided",
                     __FUNCTION__);
-            return BAD_VALUE;
+          //  return BAD_VALUE;
         }
         char *endPtr;
         errno = 0;
         validatedParams.gpsCoordinates[0] = strtod(gpsLatStr, &endPtr);
         if (errno || endPtr == gpsLatStr) {
             ALOGE("%s: Malformed GPS latitude: %s", __FUNCTION__, gpsLatStr);
-            return BAD_VALUE;
+           // return BAD_VALUE;
         }
         errno = 0;
         validatedParams.gpsCoordinates[1] = strtod(gpsLongStr, &endPtr);
         if (errno || endPtr == gpsLongStr) {
             ALOGE("%s: Malformed GPS longitude: %s", __FUNCTION__, gpsLongStr);
-            return BAD_VALUE;
+            //return BAD_VALUE;
         }
         errno = 0;
         validatedParams.gpsCoordinates[2] = strtod(gpsAltitudeStr, &endPtr);
         if (errno || endPtr == gpsAltitudeStr) {
             ALOGE("%s: Malformed GPS altitude: %s", __FUNCTION__,
                     gpsAltitudeStr);
-            return BAD_VALUE;
+            //return BAD_VALUE;
         }
         errno = 0;
         validatedParams.gpsTimestamp = strtoll(gpsTimeStr, &endPtr, 10);
         if (errno || endPtr == gpsTimeStr) {
             ALOGE("%s: Malformed GPS timestamp: %s", __FUNCTION__, gpsTimeStr);
-            return BAD_VALUE;
+            //return BAD_VALUE;
         }
         validatedParams.gpsProcessingMethod = gpsProcMethodStr;
 
@@ -1560,7 +1560,7 @@ status_t Parameters::set(const String8& paramString) {
             ALOGE("%s: Requested effect mode \"%s\" is not supported",
                     __FUNCTION__,
                     newParams.get(CameraParameters::KEY_EFFECT) );
-            return BAD_VALUE;
+            //return BAD_VALUE;
         }
     }
 
@@ -1578,7 +1578,7 @@ status_t Parameters::set(const String8& paramString) {
             ALOGE("%s: Requested antibanding mode \"%s\" is not supported",
                     __FUNCTION__,
                     newParams.get(CameraParameters::KEY_ANTIBANDING));
-            return BAD_VALUE;
+            //return BAD_VALUE;
         }
     }
 
@@ -1598,7 +1598,7 @@ status_t Parameters::set(const String8& paramString) {
             ALOGE("%s: Requested scene mode \"%s\" is not supported",
                     __FUNCTION__,
                     newParams.get(CameraParameters::KEY_SCENE_MODE));
-            return BAD_VALUE;
+            //return BAD_VALUE;
         }
     }
     bool sceneModeSet =
@@ -1627,7 +1627,7 @@ status_t Parameters::set(const String8& paramString) {
             ALOGE("%s: Requested flash mode \"%s\" is not supported: "
                     "No flash on device", __FUNCTION__,
                     newParams.get(CameraParameters::KEY_FLASH_MODE));
-            return BAD_VALUE;
+            //return BAD_VALUE;
         } else if (validatedParams.flashMode == Parameters::FLASH_MODE_RED_EYE) {
             camera_metadata_ro_entry_t availableAeModes =
                 staticInfo(ANDROID_CONTROL_AE_AVAILABLE_MODES);
@@ -1639,13 +1639,13 @@ status_t Parameters::set(const String8& paramString) {
                 ALOGE("%s: Requested flash mode \"%s\" is not supported",
                         __FUNCTION__,
                         newParams.get(CameraParameters::KEY_FLASH_MODE));
-                return BAD_VALUE;
+                //return BAD_VALUE;
             }
         } else if (validatedParams.flashMode == -1) {
             ALOGE("%s: Requested flash mode \"%s\" is unknown",
                     __FUNCTION__,
                     newParams.get(CameraParameters::KEY_FLASH_MODE));
-            return BAD_VALUE;
+            //return BAD_VALUE;
         }
         // Update in case of override, but only if flash is supported
         if (isFlashAvailable) {
@@ -1676,7 +1676,7 @@ status_t Parameters::set(const String8& paramString) {
             ALOGE("%s: Requested white balance mode %s is not supported",
                     __FUNCTION__,
                     newParams.get(CameraParameters::KEY_WHITE_BALANCE));
-            return BAD_VALUE;
+            //return BAD_VALUE;
         }
         // Update in case of override
         newParams.set(CameraParameters::KEY_WHITE_BALANCE,
@@ -1744,7 +1744,7 @@ status_t Parameters::set(const String8& paramString) {
     if (res != OK) {
         ALOGE("%s: Requested focus areas are malformed: %s",
                 __FUNCTION__, newParams.get(CameraParameters::KEY_FOCUS_AREAS));
-        return BAD_VALUE;
+        //return BAD_VALUE;
     }
 
     // EXPOSURE_COMPENSATION
@@ -1758,7 +1758,7 @@ status_t Parameters::set(const String8& paramString) {
             exposureCompensationRange.data.i32[1])) {
         ALOGE("%s: Requested exposure compensation index is out of bounds: %d",
                 __FUNCTION__, validatedParams.exposureCompensation);
-        return BAD_VALUE;
+        //return BAD_VALUE;
     }
 
     // AUTO_EXPOSURE_LOCK (always supported)
@@ -1783,7 +1783,7 @@ status_t Parameters::set(const String8& paramString) {
         ALOGE("%s: Requested metering areas are malformed: %s",
                 __FUNCTION__,
                 newParams.get(CameraParameters::KEY_METERING_AREAS));
-        return BAD_VALUE;
+        //return BAD_VALUE;
     }
 
     // ZOOM
@@ -1792,7 +1792,7 @@ status_t Parameters::set(const String8& paramString) {
                 || validatedParams.zoom >= (int)NUM_ZOOM_STEPS) {
         ALOGE("%s: Requested zoom level %d is not supported",
                 __FUNCTION__, validatedParams.zoom);
-        return BAD_VALUE;
+        //return BAD_VALUE;
     }
 
     // VIDEO_SIZE
@@ -1819,7 +1819,7 @@ status_t Parameters::set(const String8& paramString) {
                 ALOGE("%s: Requested video size %d x %d is not supported",
                         __FUNCTION__, validatedParams.videoWidth,
                         validatedParams.videoHeight);
-                return BAD_VALUE;
+                //return BAD_VALUE;
             }
         }
     }
@@ -1969,7 +1969,7 @@ status_t Parameters::updateRequest(CameraMetadata *request) const {
         default:
             ALOGE("%s: Camera %d: Unknown flash mode %d", __FUNCTION__,
                     cameraId, flashMode);
-                return BAD_VALUE;
+               // return BAD_VALUE;
     }
     res = request->update(ANDROID_FLASH_MODE,
             &reqFlashMode, 1);
@@ -2005,7 +2005,7 @@ status_t Parameters::updateRequest(CameraMetadata *request) const {
         default:
                 ALOGE("%s: Camera %d: Unknown focus mode %d", __FUNCTION__,
                         cameraId, focusMode);
-                return BAD_VALUE;
+                //return BAD_VALUE;
     }
     res = request->update(ANDROID_LENS_FOCUS_DISTANCE,
             &reqFocusDistance, 1);
