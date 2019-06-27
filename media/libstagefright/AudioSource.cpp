@@ -256,6 +256,12 @@ status_t AudioSource::start(MetaData *params) {
     } else {
         mStartTimeUs = systemTime() / 1000ll;
     }
+
+    // Signal the callback to trigger the writer to begin read/writing mic data.
+    // Can't signal too early, otherwise timestamp will be messed up.
+    // FIXME: Why AudioSource has this responsibility?
+    triggerReadAudio();
+
     status_t err = mRecord->start();
     if (err == OK) {
         mStarted = true;
@@ -319,12 +325,9 @@ status_t AudioSource::reset() {
 
 void AudioSource::setReadAudioCb(on_audio_source_read_audio cb, void *context)
 {
+    // The callback will be called within start()
     mAudioReadCb = cb;
     mAudioReadContext = context;
-
-    // RecordThread has been setup successfully by this point, so signal
-    // the callback to trigger the writer to begin read/writing mic data
-    triggerReadAudio();
 }
 
 void AudioSource::triggerReadAudio()
